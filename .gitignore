@@ -1,0 +1,21 @@
+# Ignorer les fichiers d'environnement
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignorer les dépendances
+#node_modules/
+
+# Ignorer les fichiers logs
+logs/
+*.log
+npm-debug.log*
+
+# Ignorer les fichiers de build
+dist/
+build/
+
+# Ignorer les fichiers système (Windows / Mac)
+.DS_Store
+Thumbs.db
