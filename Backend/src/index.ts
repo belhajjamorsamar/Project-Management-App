@@ -33,23 +33,21 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
         message: "Hello i'm samar belhajjamor the developer of this application",
     });
 });
-const PORT = config.PORT || 3000;
+
+app.use(errorHandler)
 
 const startServer = async () => {
     try {
-        await connectDatabase(); // Se connecter à MongoDB
-        console.log("✅ Database connected successfully");
-
+        await connectDatabase(); 
+        const PORT = config.PORT || 3000;
         app.listen(PORT, () => {
             console.log(`🚀 Server is running on http://localhost:${PORT}${BASE_PATH}`);
         });
     } catch (error) {
-        console.error("❌ Failed to connect to the database:", error);
-        process.exit(1); // Quitter l'application en cas d'erreur
+        console.error("❌ Failed to start server:", error);
+        process.exit(1);
     }
 };
 
-// 📌 **Démarrer l'application**
 startServer();
-
 
