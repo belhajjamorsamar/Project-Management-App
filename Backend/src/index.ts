@@ -2,10 +2,9 @@ import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import session from "cookie-session";
-import appConfig from "./config/app.config"; // Correction de l'importation
-
+import { config } from "./config/app.config";
+import connectDatabase from "./config/database.config";
 const app = express();
-const config = appConfig(); // Appeler la fonction pour récupérer la config
 const BASE_PATH = config.BASE_PATH;
 
 app.use(express.json());
@@ -14,15 +13,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
     session({
         name: "session",
-        keys: [config.SESSION_SECRET], // Correction : SESSION_SECRET au lieu de SESION_SECRET
-        maxAge: 24 * 60 * 60 * 1000, // 24 heures en millisecondes
+        keys: [config.SESSION_SECRET],
+        maxAge: 24 * 60 * 60 * 1000, 
         secure: config.NODE_ENV === "production",
         httpOnly: true,
         sameSite: "lax",
     })
 );
 
-// Correction de l'utilisation de `cors`
 app.use(
     cors({
         origin: config.FRONTEND_ORIGIN,
@@ -30,15 +28,28 @@ app.use(
     })
 );
 
-// Correction de la route GET "/"
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
-        message: "Hello",
+        message: "Hello i'm samar belhajjamor the developer of this application",
     });
 });
-
-// Ajout de `app.listen` pour démarrer le serveur
 const PORT = config.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}${BASE_PATH}`);
-});
+
+const startServer = async () => {
+    try {
+        await connectDatabase(); // Se connecter à MongoDB
+        console.log("✅ Database connected successfully");
+
+        app.listen(PORT, () => {
+            console.log(`🚀 Server is running on http://localhost:${PORT}${BASE_PATH}`);
+        });
+    } catch (error) {
+        console.error("❌ Failed to connect to the database:", error);
+        process.exit(1); // Quitter l'application en cas d'erreur
+    }
+};
+
+// 📌 **Démarrer l'application**
+startServer();
+
+
